@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>People Manager</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+<header class="page-header">
+<div>
+<p class="eyebrow">MLOps CRUD Dashboard</p>
+<h1>People Manager</h1>
+<p class="subtitle">Add, update, and remove records used by the training pipeline.</p>
+</div>
+<div class="record-count">
+<span>{{ people|length }}</span>
+<small>Records</small>
+</div>
+</header>
+
+<section class="panel form-panel">
+<h2>{% if person_to_edit %}Update record{% else %}Add a new record{% endif %}</h2>
+<form action="/save" method="POST" class="person-form">
+<input type="hidden" name="edit_id" value="{{ edit_id if person_to_edit else '' }}">
+
+<label>
+<span>Name</span>
+<input type="text" name="name" placeholder="Enter name"
+value="{{ person_to_edit.name if person_to_edit else '' }}" required>
+</label>
+
+<label>
+<span>Age</span>
+<input type="number" name="age" placeholder="Enter age"
+value="{{ person_to_edit.age if person_to_edit else '' }}" required>
+</label>
+
+<div class="form-actions">
+<button type="submit" class="primary-button">
+{% if person_to_edit %}Update{% else %}Add{% endif %}
+</button>
+{% if person_to_edit %}
+<a href="/" class="secondary-button">Cancel</a>
+{% endif %}
+</div>
+</form>
+</section>
+
+<section class="panel table-panel">
+<div class="section-heading">
+<h2>Saved Records</h2>
+</div>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Age</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody>
+
+{% for person in people %}
+<tr>
+<td>{{ person.name }}</td>
+<td>{{ person.age }}</td>
+<td class="actions">
+<a href="/?edit={{ loop.index0 }}" class="action-link edit-link">Edit</a>
+<a href="/delete/{{ loop.index0 }}" class="action-link delete-link">Delete</a>
+</td>
+</tr>
+{% else %}
+<tr>
+<td colspan="3" class="empty-state">No records yet. Add your first person above.</td>
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</body>
+</html>
